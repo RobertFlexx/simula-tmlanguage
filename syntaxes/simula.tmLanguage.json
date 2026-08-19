@@ -1,0 +1,741 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Simula",
+  "scopeName": "source.simula",
+  "patterns": [
+    { "include": "#class_end_comment" },
+    { "include": "#comments" },
+    { "include": "#string" },
+    { "include": "#character" },
+    { "include": "#number" },
+    { "include": "#class_declaration" },
+    { "include": "#class_prefix_declaration" },
+    { "include": "#external_declaration" },
+    { "include": "#procedure_declaration" },
+    { "include": "#ref_types" },
+    { "include": "#object_generator" },
+    { "include": "#inspect_clause" },
+    { "include": "#goto_statement" },
+    { "include": "#switch_declaration" },
+    { "include": "#foreign_declaration" },
+    { "include": "#label" },
+    { "include": "#program_declaration" },
+    { "include": "#module_declaration" },
+    { "include": "#enum_declaration" },
+    { "include": "#type_alias" },
+    { "include": "#constants" },
+    { "include": "#types" },
+    { "include": "#modifiers" },
+    { "include": "#declaration_keywords" },
+    { "include": "#control_keywords" },
+    { "include": "#word_operators" },
+    { "include": "#builtin_environment" },
+    { "include": "#builtin_functions" },
+    { "include": "#function_call" },
+    { "include": "#assignments" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.simula",
+          "begin": "!",
+          "end": ";"
+        },
+        {
+          "name": "comment.block.simula",
+          "begin": "(?i)\\bcomment\\b",
+          "end": ";"
+        }
+      ]
+    },
+    "class_end_comment": {
+      "patterns": [
+        {
+          "name": "comment.block.simula",
+          "begin": "(?i)\\bend[ \\t]+(?!(?:else|when|otherwise|is)\\b)(?=[A-Za-z_][A-Za-z0-9_]*(?:[ \\t][A-Za-z_][A-Za-z0-9_]*)*[ \\t]*;)",
+          "beginCaptures": {
+            "0": {
+              "name": "keyword.control.end.simula"
+            }
+          },
+          "end": ";"
+        }
+      ]
+    },
+    "string": {
+      "name": "string.quoted.double.simula",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.simula",
+          "match": "\"\"|!\\d{1,3}!|\\\\(?:[nrt\\\\\"']|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,6})"
+        }
+      ]
+    },
+    "character": {
+      "name": "constant.character.simula",
+      "begin": "'",
+      "end": "'",
+      "patterns": [
+        {
+          "name": "constant.character.escape.simula",
+          "match": "''|!\\d{1,3}!|\\\\(?:[nrt\\\\\"']|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,6})"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.simula",
+          "match": "(?i)\\b(?:16r[0-9a-f_]+|8r[0-7_]+|4r[0-3_]+|2r[01_]+|0x[0-9a-f_]+|0b[01_]+|0o[0-7_]+)\\b"
+        },
+        {
+          "name": "constant.numeric.simula",
+          "match": "(?i)\\b\\d[\\d_]*\\.\\d[\\d_]*(?:[e&][&]?[+-]?\\d[\\d_]*)?\\b"
+        },
+        {
+          "name": "constant.numeric.simula",
+          "match": "(?i)\\b\\.\\d[\\d_]*(?:[e&][&]?[+-]?\\d[\\d_]*)?\\b"
+        },
+        {
+          "name": "constant.numeric.simula",
+          "match": "(?i)\\b\\d[\\d_]*(?:[e&][&]?[+-]?\\d[\\d_]*)?\\b"
+        }
+      ]
+    },
+    "class_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.class.simula",
+          "begin": "(?i)\\b(class)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.other.class.simula"
+            },
+            "2": {
+              "name": "entity.name.class.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            { "include": "#number" },
+            { "include": "#parameters" }
+          ]
+        }
+      ]
+    },
+    "class_prefix_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.class.simula",
+          "begin": "(?i)(?<![A-Za-z0-9_])((?!external\\b)[A-Za-z_][A-Za-z0-9_]*)[ \\t]+(?:([A-Za-z_][A-Za-z0-9_]*)[ \\t]+){0,3}(class)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.inherited-class.simula"
+            },
+            "2": {
+              "name": "entity.other.inherited-class.simula"
+            },
+            "3": {
+              "name": "keyword.other.class.simula"
+            },
+            "4": {
+              "name": "entity.name.class.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            { "include": "#number" },
+            { "include": "#parameters" }
+          ]
+        }
+      ]
+    },
+    "external_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.external.simula",
+          "begin": "(?i)\\b(external)[ \\t]+(class)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.external.simula"
+            },
+            "2": {
+              "name": "keyword.other.class.simula"
+            },
+            "3": {
+              "name": "entity.name.class.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            {
+              "match": ",([ \\t]*)([A-Za-z_][A-Za-z0-9_]*)(?=,|;)",
+              "captures": {
+                "2": {
+                  "name": "entity.name.class.simula"
+                }
+              }
+            },
+            {
+              "match": "=",
+              "name": "keyword.operator.assignment.simula"
+            }
+          ]
+        },
+        {
+          "name": "meta.declaration.external.simula",
+          "begin": "(?i)\\b(external)[ \\t]+(?:(fortran|algol|simula|basic|cobol|assembler|pascal)[ \\t]+)?(\\b(?:long[ \\t]+real|short[ \\t]+integer|boolean|character|integer|real|text|string)\\b[ \\t]+)?((?:procedure|function))[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.external.simula"
+            },
+            "2": {
+              "name": "support.type.language.simula"
+            },
+            "3": {
+              "name": "storage.type.simula"
+            },
+            "4": {
+              "name": "keyword.other.procedure.simula"
+            },
+            "5": {
+              "name": "entity.name.function.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            { "include": "#number" },
+            {
+              "match": "=",
+              "name": "keyword.operator.assignment.simula"
+            }
+          ]
+        }
+      ]
+    },
+    "procedure_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.procedure.simula",
+          "begin": "(?i)(\\b(?:long[ \\t]+real|short[ \\t]+integer|boolean|character|integer|real|text|string)\\b(?=[ \\t]+(?:procedure|function)\\b))?[ \\t]*((?:procedure|function))[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.type.simula"
+            },
+            "2": {
+              "name": "keyword.other.procedure.simula"
+            },
+            "3": {
+              "name": "entity.name.function.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            { "include": "#number" },
+            { "include": "#ref_types" },
+            { "include": "#types" },
+            { "include": "#modifiers" },
+            { "include": "#parameters" }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "patterns": [
+        {
+          "name": "punctuation.section.parameters.simula",
+          "begin": "\\(",
+          "end": "\\)",
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" },
+            { "include": "#number" },
+            { "include": "#ref_types" },
+            { "include": "#types" },
+            {
+              "match": "([A-Za-z_][A-Za-z0-9_]*)[ \\t]*:",
+              "captures": {
+                "1": {
+                  "name": "variable.parameter.simula"
+                }
+              }
+            },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b",
+              "name": "variable.parameter.simula"
+            }
+          ]
+        }
+      ]
+    },
+    "ref_types": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(ref)[ \\t]*\\([ \\t]*([A-Za-z_][A-Za-z0-9_]*)[ \\t]*\\)",
+          "captures": {
+            "1": {
+              "name": "storage.modifier.ref.simula"
+            },
+            "2": {
+              "name": "entity.name.type.simula"
+            }
+          }
+        }
+      ]
+    },
+    "object_generator": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(new)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.other.new.simula"
+            },
+            "2": {
+              "name": "entity.name.class.simula"
+            }
+          }
+        }
+      ]
+    },
+    "inspect_clause": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(when)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.when.simula"
+            },
+            "2": {
+              "name": "entity.name.class.simula"
+            }
+          }
+        }
+      ]
+    },
+    "goto_statement": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(goto|go)[ \\t]+(to)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.goto.simula"
+            },
+            "2": {
+              "name": "keyword.control.goto.simula"
+            },
+            "3": {
+              "name": "entity.name.label.simula"
+            }
+          }
+        },
+        {
+          "match": "(?i)\\b(goto)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.control.goto.simula"
+            },
+            "2": {
+              "name": "entity.name.label.simula"
+            }
+          }
+        }
+      ]
+    },
+    "switch_declaration": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(switch)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)[ \\t]*(:=)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.switch.simula"
+            },
+            "2": {
+              "name": "entity.name.switch.simula"
+            },
+            "3": {
+              "name": "keyword.operator.assignment.simula"
+            }
+          }
+        }
+      ]
+    },
+    "foreign_declaration": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(foreign)[ \\t]+(c)(?:[ \\t]+(from)[ \\t]+(\"[^\"]*\"))?",
+          "captures": {
+            "1": {
+              "name": "keyword.other.foreign.simula"
+            },
+            "2": {
+              "name": "support.type.language.c.simula"
+            },
+            "3": {
+              "name": "keyword.other.from.simula"
+            },
+            "4": {
+              "name": "string.import.simula"
+            }
+          }
+        }
+      ]
+    },
+    "label": {
+      "patterns": [
+        {
+          "match": "(?i)^[ \\t]*((?!private|public|protected|virtual)[A-Za-z_][A-Za-z0-9_]*)[ \\t]*:(?![=:-])",
+          "captures": {
+            "1": {
+              "name": "entity.name.label.simula"
+            }
+          }
+        }
+      ]
+    },
+    "program_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.program.simula",
+          "begin": "(?i)\\b(program)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.other.declaration.simula"
+            },
+            "2": {
+              "name": "entity.name.type.program.simula"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.statement.simula"
+            }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#string" },
+            { "include": "#character" }
+          ]
+        }
+      ]
+    },
+    "module_declaration": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(module)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.other.module.simula"
+            },
+            "2": {
+              "name": "entity.name.type.module.simula"
+            }
+          }
+        },
+        {
+          "match": "(?i)\\b(import)[ \\t]+(\"[^\"]*\"|[A-Za-z_][A-Za-z0-9_.]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.other.import.simula"
+            },
+            "2": {
+              "name": "string.import.simula"
+            }
+          }
+        }
+      ]
+    },
+    "enum_declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.enum.simula",
+          "begin": "(?i)\\b(enum)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.other.enum.simula"
+            },
+            "2": {
+              "name": "entity.name.type.enum.simula"
+            }
+          },
+          "end": ";",
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#number" },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b",
+              "name": "constant.other.enum.simula"
+            }
+          ]
+        }
+      ]
+    },
+    "type_alias": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(type)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)[ \\t]*(=)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.other.type.simula"
+            },
+            "2": {
+              "name": "entity.name.type.alias.simula"
+            },
+            "3": {
+              "name": "keyword.operator.assignment.simula"
+            },
+            "4": {
+              "name": "storage.type.simula"
+            }
+          }
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(true|false|none|notext)\\b",
+          "name": "constant.language.simula"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(?:long|short)[ \\t]+(?:integer|real)\\b",
+          "name": "storage.type.simula"
+        },
+        {
+          "match": "(?i)\\b(?:integer|real|boolean|character|text|string|array|label|atomic)\\b",
+          "name": "storage.type.simula"
+        },
+        {
+          "match": "(?i)\\b(?:channel|future|mutex|semaphore|barrier|condition)\\b",
+          "name": "storage.type.simula"
+        },
+        {
+          "match": "(?i)\\b(?:process|task|thread)\\b",
+          "name": "storage.type.simula"
+        },
+        {
+          "match": "(?i)\\b(?:c_(?:bool|char|uchar|short|ushort|int|uint|long|ulong|float|double|string|void|size_t|ssize_t))\\b",
+          "name": "storage.type.simula"
+        }
+      ]
+    },
+    "modifiers": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(value|name|ref)\\b",
+          "name": "storage.modifier.parameter.simula"
+        },
+        {
+          "match": "(?i)\\b(virtual|hidden|protected|external|inner|own|sealed|final|abstract|override|pure|export|inline|native|volatile|noreturn|threadlocal|once)\\b",
+          "name": "storage.modifier.simula"
+        },
+        {
+          "match": "(?i)\\b(public|private)[ \\t]*:",
+          "name": "storage.modifier.visibility.simula"
+        }
+      ]
+    },
+    "declaration_keywords": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(class|procedure|function|program|record|foreign|from|lambda|const|var|enum|module|import|type)\\b",
+          "name": "keyword.other.declaration.simula"
+        }
+      ]
+    },
+    "control_keywords": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(begin|end)\\b",
+          "name": "keyword.control.block.simula"
+        },
+        {
+          "match": "(?i)\\b(if|then|else|for|step|until|while|do|to|by|repeat|case|with|match|select|where|between)\\b",
+          "name": "keyword.control.conditional.simula"
+        },
+        {
+          "match": "(?i)\\b(inspect|when|otherwise)\\b",
+          "name": "keyword.control.inspect.simula"
+        },
+        {
+          "match": "(?i)\\b(activate|deactivate|reactivate|hold|passivate|detach|resume|delay|at|before|after|prior|cancel|timeout)\\b",
+          "name": "keyword.control.process.simula"
+        },
+        {
+          "match": "(?i)\\b(goto|go)\\b",
+          "name": "keyword.control.goto.simula"
+        },
+        {
+          "match": "(?i)\\b(break|continue|return|exit|raise|try|catch|finally|defer|parallel|critical|synchronized|lock|unlock|assert|spawn|join|yield|await|async|switch)\\b",
+          "name": "keyword.control.simula"
+        },
+        {
+          "match": "(?i)\\b(this|new|qua)\\b",
+          "name": "keyword.other.simula"
+        }
+      ]
+    },
+    "word_operators": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(not|and|or|eqv|imp|xor|shl|shr|div|mod|rem|is|in)\\b",
+          "name": "keyword.operator.word.simula"
+        },
+        {
+          "match": "(?i)\\b(eq|ne|lt|le|gt|ge)\\b",
+          "name": "keyword.operator.comparison.simula"
+        }
+      ]
+    },
+    "builtin_environment": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(sysin|sysout|syserr)\\b",
+          "name": "support.class.environment.simula"
+        },
+        {
+          "match": "(?i)\\bimage\\b",
+          "name": "support.variable.environment.simula"
+        }
+      ]
+    },
+    "builtin_functions": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(outtext|outimage|outint|outfix|outreal|outchar|inimage|inchar|inint|inreal|infrac|intext)\\b",
+          "name": "support.function.basicio.simula"
+        },
+        {
+          "match": "(?i)\\b(blanks|copy|strip|upcase|lowcase|edit|sub|char|rank|length)\\b",
+          "name": "support.function.text.simula"
+        },
+        {
+          "match": "(?i)\\b(putint|putfix|putreal|putfrac|getint|getreal|getfrac|getchar|putchar|setpos|startpos|more|pos)\\b",
+          "name": "support.function.text.simula"
+        },
+        {
+          "match": "(?i)\\b(exp|sin|cos|tan|arctan|ln|log|sqrt|abs|sign|entier|frac|random|negexp|minimal)\\b",
+          "name": "support.function.math.simula"
+        },
+        {
+          "match": "(?i)\\b(atomic_load|atomic_store|atomic_exchange|atomic_compare_exchange|atomic_fetch_add|atomic_fetch_sub|atomic_fetch_and|atomic_fetch_or|atomic_fetch_xor|mutex_lock|mutex_try_lock|mutex_unlock|semaphore_init|semaphore_wait|semaphore_try_wait|semaphore_post|barrier_init|barrier_wait|condition_wait|condition_signal|condition_broadcast|thread_id|monotonic_ns|sleep_ns|receive|send|sizeof|typeof|ord|chr|low|high|max|min)\\b",
+          "name": "support.function.intrinsic.simula"
+        }
+      ]
+    },
+    "function_call": {
+      "patterns": [
+        {
+          "match": "\\b([A-Za-z_][A-Za-z0-9_]*)[ \\t]*(\\()",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.simula"
+            },
+            "2": {
+              "name": "punctuation.definition.arguments.begin.simula"
+            }
+          }
+        }
+      ]
+    },
+    "assignments": {
+      "patterns": [
+        {
+          "match": ":-",
+          "name": "keyword.operator.assignment.reference.simula"
+        },
+        {
+          "match": ":=",
+          "name": "keyword.operator.assignment.simula"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "=/=|/=|<>|==|=|<=|>=|<|>",
+          "name": "keyword.operator.comparison.simula"
+        },
+        {
+          "match": "\\*\\*|//|\\*|/|\\+|\\-",
+          "name": "keyword.operator.arithmetic.simula"
+        },
+        {
+          "match": "&&|&",
+          "name": "keyword.operator.concatenation.simula"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "match": ";",
+          "name": "punctuation.terminator.statement.simula"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.comma.simula"
+        },
+        {
+          "match": ":",
+          "name": "punctuation.separator.simula"
+        },
+        {
+          "match": "\\.",
+          "name": "punctuation.accessor.simula"
+        }
+      ]
+    }
+  }
+}
